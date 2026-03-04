@@ -102,7 +102,41 @@ class Task:
             info += "Статус: Не выполнена"
         return info
 
-from task import Task
+    @staticmethod
+    def validate_priority(priority):
+        """Проверяет корректность приоритета"""
+        valid_priorities = ["низкий", "средний", "высокий"]
+        return priority in valid_priorities
+
+    @staticmethod
+    def get_priority_emoji(priority):
+        """Возвращает эмодзи для приоритета"""
+        emojis = {
+            "низкий": "⬇️",
+            "средний": "➡️",
+            "высокий": "⬆️"
+        }
+        return emojis.get(priority, "❓")
+
+    @classmethod
+    def create_from_string(cls, task_string: str):
+        """
+        Создает задачу из строки формата: "Название | Описание | Приоритет"
+        """
+        try:
+            parts = task_string.split('|')
+            title = parts[0].strip()
+            description = parts[1].strip() if len(parts) > 1 else ""
+            priority = parts[2].strip() if len(parts) > 2 else "средний"
+
+            if not cls.validate_priority(priority):
+                priority = "средний"
+
+            return cls(title, description, priority)
+
+        except Exception as e:
+            print(f"Ошибка создания задачи из строки: {e}")
+            return None
 
 
 class ImportantTask(Task):
